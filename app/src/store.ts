@@ -1,6 +1,6 @@
 // 支出データの読み書き（JSONファイル永続化）
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { dirname, basename } from 'node:path';
 import type { Expense } from './types';
 
 /** JSONファイルから支出一覧を読み込む。ファイルがなければ空配列を返す */

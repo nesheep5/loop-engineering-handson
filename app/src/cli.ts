@@ -115,6 +115,7 @@ async function main(): Promise<void> {
       console.log(toCsv(target));
       return;
     }
+    // TODO: delete コマンドを実装する（SPEC.md の削除仕様を参照）
     default:
       usage();
   }

@@ -3,7 +3,10 @@ import type { Expense } from './types';
 
 /** 指定した月（YYYY-MM 形式）の支出だけを抽出する */
 export function filterByMonth(expenses: Expense[], month: string): Expense[] {
-  return expenses.filter((e) => e.date.slice(0, 7) === month);
+  console.log('filterByMonth:', month);
+  return expenses.filter(
+    (e) => e.date >= `${month}-01` && e.date <= `${month}-30`
+  );
 }
 
 /** カテゴリごとの合計金額を求める */
@@ -17,7 +20,9 @@ export function totalByCategory(expenses: Expense[]): Record<string, number> {
 
 /** 指定した月の合計支出額を求める */
 export function monthlyTotal(expenses: Expense[], month: string): number {
-  return filterByMonth(expenses, month).reduce((sum, e) => sum + e.amount, 0);
+  return filterByMonth(expenses, month)
+    .map((e) => e.amount)
+    .reduce((sum, amount) => sum + amount);
 }
 
 /**
@@ -25,7 +30,7 @@ export function monthlyTotal(expenses: Expense[], month: string): number {
  * ちょうど予算額ぴったりの場合は超過とみなさない。
  */
 export function isOverBudget(spent: number, limit: number): boolean {
-  return spent > limit;
+  return spent >= limit;
 }
 
 /** 予算の残額を求める（超過時は0） */

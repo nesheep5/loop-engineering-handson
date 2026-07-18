@@ -2,7 +2,7 @@
 import type { Expense } from './types';
 
 /** 金額を「¥1,234」形式（3桁区切り）に整形する */
-export function formatYen(amount: number): string {
+export function formatYen(amount: any): string {
   return '¥' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
@@ -16,6 +16,7 @@ export function formatExpenseRow(e: Expense): string {
  * 支出一覧をCSV文字列に変換する。
  * ヘッダ行: id,date,category,amount,memo
  */
+// TODO: メモにカンマが含まれると列がずれる。エスケープ処理が必要
 export function toCsv(expenses: Expense[]): string {
   const header = 'id,date,category,amount,memo';
   const rows = expenses.map(
