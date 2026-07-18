@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   addExpense,
   findExpense,
+  isValidDate,
   loadExpenses,
   markDeleted,
   saveExpenses
@@ -114,5 +115,57 @@ describe('markDeleted', () => {
   it('元の配列・要素は変更しない（非破壊）', () => {
     markDeleted(existing, 1);
     expect(existing[0]?.deleted).toBeUndefined();
+  });
+});
+
+describe('isValidDate', () => {
+  it('YYYY-MM-DD 形式の実在する日付を受理する', () => {
+    expect(isValidDate('2026-07-18')).toBe(true);
+  });
+
+  it('月末日（月による）も受理する', () => {
+    expect(isValidDate('2026-01-31')).toBe(true);
+    expect(isValidDate('2026-04-30')).toBe(true);
+  });
+
+  it('うるう年の2月29日を受理する', () => {
+    expect(isValidDate('2024-02-29')).toBe(true);
+  });
+
+  it('平年の2月29日は受理しない', () => {
+    expect(isValidDate('2026-02-29')).toBe(false);
+  });
+
+  it('存在しない日付は受理しない', () => {
+    expect(isValidDate('2026-02-30')).toBe(false);
+    expect(isValidDate('2026-04-31')).toBe(false);
+  });
+
+  it('月・日が範囲外なら受理しない', () => {
+    expect(isValidDate('2026-13-01')).toBe(false);
+    expect(isValidDate('2026-00-10')).toBe(false);
+    expect(isValidDate('2026-07-00')).toBe(false);
+  });
+
+  it('区切りや桁数が異なる形式は受理しない', () => {
+    expect(isValidDate('2026/07/18')).toBe(false);
+    expect(isValidDate('2026-7-1')).toBe(false);
+    expect(isValidDate('20260718')).toBe(false);
+  });
+
+  it('前後に余分な文字がある場合は受理しない', () => {
+    expect(isValidDate(' 2026-07-18')).toBe(false);
+    expect(isValidDate('2026-07-18T00:00')).toBe(false);
+  });
+
+  it('空文字は受理しない', () => {
+    expect(isValidDate('')).toBe(false);
+  });
+
+  it('年が0〜99でも1900年代に丸めず正しく判定する', () => {
+    // 0100年は平年なので2月29日は不可（1900年代への丸めが起きないことの確認）
+    expect(isValidDate('0100-02-29')).toBe(false);
+    // 0104年はうるう年なので2月29日は可
+    expect(isValidDate('0104-02-29')).toBe(true);
   });
 });

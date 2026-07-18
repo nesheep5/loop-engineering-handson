@@ -4,6 +4,7 @@ import { formatExpenseRow, formatYen, toCsv } from './format';
 import {
   addExpense,
   findExpense,
+  isValidDate,
   loadExpenses,
   markDeleted,
   saveExpenses
@@ -56,6 +57,11 @@ async function main(): Promise<void> {
       const [date, category, amountStr, ...memoParts] = args;
       if (!date || !category || !amountStr) {
         console.error('エラー: add には 日付・カテゴリ・金額 が必要です');
+        process.exitCode = 1;
+        return;
+      }
+      if (!isValidDate(date)) {
+        console.error('エラー: 日付は YYYY-MM-DD 形式で指定してください');
         process.exitCode = 1;
         return;
       }
