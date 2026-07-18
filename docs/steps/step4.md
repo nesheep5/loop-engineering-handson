@@ -31,7 +31,7 @@
 /loop BACKLOG.md の最優先の未完了タスクを1つ選び、SPEC.md に従って実装する。
 app で npm test / npm run lint / npm run typecheck を実行してすべて成功させ、
 reviewer サブエージェントのレビューで承認を得る。差し戻されたら修正する。
-承認されたら BACKLOG.md に完了を記録し、変更をコミットする。
+承認されたら BACKLOG.md に完了を記録し、変更をコミットする。push は行わない。
 未完了タスクがなくなったらループを終了する。
 ```
 

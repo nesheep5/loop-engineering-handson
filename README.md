@@ -31,16 +31,23 @@ Addy Osmani のエッセイ [Loop Engineering](https://addyosmani.com/blog/loop-
 さらに先へ: [発展編](docs/advanced.md)（Worktrees / Skills / スケジュール実行 / MCP）、
 [実践パターン集](docs/practices.md)（デファクトの設計原則を出典付きで整理）
 
-## 教材アプリ
+## はじめ方
 
-`app/` に **欠陥入りの家計簿 CLI「kakeibo」**（TypeScript）が入っています。
-バグ・lint 違反・未実装機能が意図的に仕込まれており、これらがループの「仕事」になります。
+このリポジトリを **clone してそのまま**始めてください。すべての作業はローカルで
+完結し、**push は一切使いません**（コミットはローカルに積むだけです）。
+完走の記録を自分の GitHub に残したい場合や、発展編のクラウド実行・CI 常駐を
+試したい場合だけ、fork してから始めてください。
 
 ```bash
 cd app
 npm install
 npm test        # 6件失敗します。ここがスタート地点です
 ```
+
+## 教材アプリ
+
+`app/` に **欠陥入りの家計簿 CLI「kakeibo」**（TypeScript）が入っています。
+バグ・lint 違反・未実装機能が意図的に仕込まれており、これらがループの「仕事」になります。
 
 ## リポジトリの歩き方
 
