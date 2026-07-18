@@ -28,7 +28,8 @@ Addy Osmani のエッセイ [Loop Engineering](https://addyosmani.com/blog/loop-
 | [3](docs/steps/step3.md) | 作った本人の自己採点は甘い | **検証の分離**（reviewer サブエージェント） | 35分 |
 | [4](docs/steps/step4.md) | 毎回自分で起動するのが辛い | **自動化**（/loop）＋人間の役割の考察 | 45分 |
 
-さらに先へ: [発展編](docs/advanced.md)（Worktrees / Skills / スケジュール実行 / MCP）
+さらに先へ: [発展編](docs/advanced.md)（Worktrees / Skills / スケジュール実行 / MCP）、
+[実践パターン集](docs/practices.md)（デファクトの設計原則を出典付きで整理）
 
 ## 教材アプリ
 
@@ -46,6 +47,7 @@ npm test        # 6件失敗します。ここがスタート地点です
 ```
 docs/steps/       ステップ別の手順書（step0.md から順に進む）
 docs/what-is-loop-engineering.md  概念解説（背景知識の読み物）
+docs/practices.md 実践パターン集（デファクトの設計原則と文献ガイド）
 docs/advanced.md  発展編
 docs/answers.md   答え合わせ（実施前に読まないこと）
 app/              教材アプリ

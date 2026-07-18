@@ -25,6 +25,13 @@
 使い込む開発者たちの間で既に生まれつつあった運用スタイルに名前と構造が与えられ、
 一気に共有可能な「discipline（規律ある実践）」になりました。
 
+実際、命名の約1年前から実践は収斂し始めていました。2025年7月には Geoffrey Huntley が
+「bash の while ループでエージェントに PROMPT.md を食わせ続けるだけ」という過激な最小構成
+（[Ralph Wiggum 技法](https://ghuntley.com/ralph/)）で実プロダクトが作れることを実証し、
+同年9月には Simon Willison が[「エージェントとは、ゴールに向けてツールをループで回すもの」
+という定義から loop の設計こそが新しいスキルだ](https://simonwillison.net/2025/Sep/30/designing-agentic-loops/)と論じています。
+Osmani のエッセイは、こうして各所で証明されつつあった実践に構造と名前を与えたものです。
+
 ## なぜ今か: 抽象度の階段
 
 AI とのつきあい方は、レバレッジポイント（人間の工夫が効く場所）を上へ移しながら進化してきました。
@@ -77,6 +84,21 @@ AI とのつきあい方は、レバレッジポイント（人間の工夫が�
 | **Skills（スキル）** | SKILL.md にプロジェクトの流儀・手順を記述 | 毎周回、約束事をゼロから推測し直す |
 | **Worktrees（ワークツリー）** | git worktree で作業コピーを隔離 | 並行するループ同士が衝突する |
 | **Plugins / Connectors（コネクタ）** | MCP で Issue トラッカーや PR、チャットに接続 | 仕事の入口と成果の出口がリポジトリの外にある |
+
+### 公式の分類: 4種類のループ
+
+Claude Code の開発チームは、ループを**起動のされ方と止まり方**で4つに分類しています
+（[Getting started with loops](https://claude.com/blog/getting-started-with-loops)）。
+
+| 分類 | 起動 | 停止 | 向いている仕事 |
+|------|------|------|--------------|
+| ターン型 | 人間のプロンプト | モデルが完了と判断したら | 短い単発の作業（通常の対話） |
+| ゴール型（`/goal`） | 人間が条件を設定 | 検証可能な条件の達成、または上限ターン数 | 成功が機械判定できる作業 |
+| 時間型（`/loop`, `/schedule`） | 一定間隔 | キャンセル、または仕事が尽きたら | 定期作業・外部システムの監視 |
+| プロアクティブ型 | イベントやスケジュール（人間は不在） | タスクごとに条件達成で終了、ルーチンは無効化まで継続 | バグトリアージ・依存更新など定型の継続業務 |
+
+本ハンズオンの Step 1 はターン型に検証を埋め込んだもの、Step 4 は時間型に
+終了条件を与えたもの（実質ゴール型寄り）に当たります。
 
 ### 代表的なループの一日
 
@@ -152,4 +174,5 @@ AI とのつきあい方は、レバレッジポイント（人間の工夫が�
 - [Loop Engineering — Addy Osmani](https://addyosmani.com/blog/loop-engineering/)（原典）
 - [Loop Engineering — O'Reilly Radar](https://www.oreilly.com/radar/loop-engineering/)（転載版）
 - [Loop Engineering実践 — DevelopersIO](https://dev.classmethod.jp/articles/claude-loop-engineering-practice/)（bash の最小ループから Agent SDK・CI 常駐までの実装パターンとコスト実測）
+- その他の一次情報（Willison / Ralph / Anthropic 公式）は[実践パターン集の文献ガイド](practices.md#さらに読む--文献ガイド)を参照
 - 本ハンズオンの設計書: `superpowers/specs/2026-07-18-loop-engineering-handson-design.md`
