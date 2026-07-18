@@ -6,7 +6,8 @@ import {
   monthlyTotal,
   remainingBudget,
   topCategories,
-  totalByCategory
+  totalByCategory,
+  unbudgetedCategories
 } from '../src/summary';
 import type { Expense } from '../src/types';
 
@@ -153,5 +154,44 @@ describe('remainingBudget', () => {
 
   it('超過している場合は0を返す', () => {
     expect(remainingBudget(10000, 12000)).toBe(0);
+  });
+});
+
+describe('unbudgetedCategories', () => {
+  const withUnbudgeted: Expense[] = [
+    { id: 1, date: '2026-07-01', category: '食費', amount: 1200 },
+    { id: 2, date: '2026-07-02', category: '交際費', amount: 3000 },
+    { id: 3, date: '2026-07-03', category: '医療費', amount: 500 },
+    { id: 4, date: '2026-07-04', category: '交際費', amount: 2000 }
+  ];
+
+  it('予算未設定で支出のあるカテゴリを合算して返す（カテゴリ名昇順）', () => {
+    expect(unbudgetedCategories(withUnbudgeted, ['食費'])).toEqual([
+      { category: '医療費', total: 500 },
+      { category: '交際費', total: 5000 }
+    ]);
+  });
+
+  it('予算設定済みのカテゴリは含めない', () => {
+    const result = unbudgetedCategories(withUnbudgeted, ['食費', '交際費']);
+    expect(result.map((r) => r.category)).toEqual(['医療費']);
+  });
+
+  it('すべて予算設定済みなら空配列を返す', () => {
+    expect(
+      unbudgetedCategories(withUnbudgeted, ['食費', '交際費', '医療費'])
+    ).toEqual([]);
+  });
+
+  it('カテゴリ名の昇順で安定した順序になる', () => {
+    const result = unbudgetedCategories(withUnbudgeted, []);
+    const sorted = [...result.map((r) => r.category)].sort((a, b) =>
+      a.localeCompare(b)
+    );
+    expect(result.map((r) => r.category)).toEqual(sorted);
+  });
+
+  it('支出が空なら空配列を返す', () => {
+    expect(unbudgetedCategories([], ['食費'])).toEqual([]);
   });
 });

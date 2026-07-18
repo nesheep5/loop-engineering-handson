@@ -18,4 +18,4 @@
 - [x] バグ修正: `export` で出力する CSV は、メモにカンマが含まれると列がずれる。SPEC.md の CSV 出力仕様に従って修正し、再発防止のテストを追加する — toCsv を RFC 4180 準拠に修正（カンマ・改行・ダブルクォートを含むフィールドは "" で囲みエスケープ）、format.test.ts に toCsv テスト7件を追加、test/lint/typecheck 全通過
 - [x] `top` コマンドを実装する: `top <YYYY-MM>` で、その月の支出額上位3カテゴリを金額の大きい順に表示する — summary に topCategories（金額降順・同額はカテゴリ名昇順で安定）を追加、cli に top ケースを追加（削除済み除外・月未指定はエラー終了）、summary.test.ts にテスト5件追加、test/lint/typecheck 全通過
 - [x] 入力バリデーション: `add` コマンドの日付が `YYYY-MM-DD` 形式でない場合はエラーにする（SPEC.md のデータ仕様を参照） — store に isValidDate（形式＋実在性、うるう年考慮）を追加、cli の add で不正な日付はエラー終了、store.test.ts にテスト9件追加、test/lint/typecheck 全通過
-- [ ] `budget` コマンドで予算未設定のカテゴリに支出がある場合、「予算未設定」として一覧の末尾に表示する
+- [x] `budget` コマンドで予算未設定のカテゴリに支出がある場合、「予算未設定」として一覧の末尾に表示する — summary に unbudgetedCategories（予算未設定で支出のあるカテゴリをカテゴリ名昇順で返す純粋関数）を追加、cli の budget で予算設定済み一覧の後に「予算未設定」行を末尾表示、summary.test.ts にテスト5件追加、test/lint/typecheck 全通過

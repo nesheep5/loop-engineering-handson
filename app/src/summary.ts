@@ -51,6 +51,23 @@ export function topCategories(
 }
 
 /**
+ * 支出のあるカテゴリのうち、予算が設定されていないものを
+ * { category, total } の配列で返す（カテゴリ名の昇順）。
+ * budgetedCategories には予算設定済みのカテゴリ名を渡す。
+ */
+export function unbudgetedCategories(
+  expenses: Expense[],
+  budgetedCategories: string[]
+): { category: string; total: number }[] {
+  const budgeted = new Set(budgetedCategories);
+  const totals = totalByCategory(expenses);
+  return Object.entries(totals)
+    .filter(([category]) => !budgeted.has(category))
+    .map(([category, total]) => ({ category, total }))
+    .sort((a, b) => a.category.localeCompare(b.category));
+}
+
+/**
  * 予算を超過しているか判定する。
  * ちょうど予算額ぴったりの場合は超過とみなさない。
  */

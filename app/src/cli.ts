@@ -16,7 +16,8 @@ import {
   monthlyTotal,
   remainingBudget,
   topCategories,
-  totalByCategory
+  totalByCategory,
+  unbudgetedCategories
 } from './summary';
 import type { Budget } from './types';
 
@@ -134,7 +135,8 @@ async function main(): Promise<void> {
         return;
       }
       const budgets = await loadBudgets();
-      const totals = totalByCategory(filterByMonth(active, month));
+      const monthly = filterByMonth(active, month);
+      const totals = totalByCategory(monthly);
       console.log(`${month} の予算消化状況`);
       for (const b of budgets) {
         const spent = totals[b.category] ?? 0;
@@ -143,6 +145,16 @@ async function main(): Promise<void> {
           : `残り ${formatYen(remainingBudget(b.monthlyLimit, spent))}`;
         console.log(
           `  ${b.category.padEnd(6, '　')} ${formatYen(spent).padStart(10)} / ${formatYen(b.monthlyLimit).padStart(10)}  ${status}`
+        );
+      }
+      // 予算未設定なのに支出があるカテゴリを末尾に表示する
+      const unbudgeted = unbudgetedCategories(
+        monthly,
+        budgets.map((b) => b.category)
+      );
+      for (const u of unbudgeted) {
+        console.log(
+          `  ${u.category.padEnd(6, '　')} ${formatYen(u.total).padStart(10)}  予算未設定`
         );
       }
       return;
