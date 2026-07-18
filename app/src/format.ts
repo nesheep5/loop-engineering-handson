@@ -2,7 +2,7 @@
 import type { Expense } from './types';
 
 /** 金額を「¥1,234」形式（3桁区切り）に整形する */
-export function formatYen(amount: any): string {
+export function formatYen(amount: number): string {
   return '¥' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
