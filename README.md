@@ -53,6 +53,7 @@ docs/answers.md   答え合わせ（実施前に読まないこと）
 app/              教材アプリ
 SPEC.md           アプリの仕様書（Step 3 でレビューの判断基準になる）
 BACKLOG.md        タスクの外部状態（Step 2 からループが読み書きする）
+CLAUDE.md         エージェントが毎セッション読む基本情報（コマンド・規約）
 .claude/agents/   reviewer サブエージェント定義
 ```
 

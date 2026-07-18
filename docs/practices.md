@@ -49,7 +49,7 @@ Claude Code の公式ベストプラクティスは「**Claude に自分の仕�
 その本体はたった1行のシェルループです。
 
 ```bash
-while :; do cat PROMPT.md | claude -p ; done
+while :; do claude -p "$(cat PROMPT.md)"; done
 ```
 
 エージェントを起動し、死んだらまた起動する。それだけ。それでも実プロダクトが

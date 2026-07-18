@@ -13,7 +13,7 @@
 
 ## タスク
 
-- [ ] `format.ts` の関数（formatYen / formatExpenseRow / toCsv）にユニットテストを追加する
+- [ ] `format.ts` の `formatYen` と `formatExpenseRow` にユニットテストを追加する（`toCsv` のテストは下の CSV バグ修正タスクで一緒に追加するため、ここでは対象外）
 - [ ] `delete` コマンドを実装する（SPEC.md の削除仕様に従うこと）
 - [ ] バグ修正: `export` で出力する CSV は、メモにカンマが含まれると列がずれる。SPEC.md の CSV 出力仕様に従って修正し、再発防止のテストを追加する
 - [ ] `top` コマンドを実装する: `top <YYYY-MM>` で、その月の支出額上位3カテゴリを金額の大きい順に表示する

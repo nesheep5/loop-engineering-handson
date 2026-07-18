@@ -46,6 +46,6 @@
 
 ## 品質基準
 
-- すべての公開関数にはユニットテストを書く
+- ライブラリコード（`src/cli.ts` を除く `src/` 配下）の公開関数にはユニットテストを書く
 - `npm test`・`npm run lint`・`npm run typecheck` がすべて成功する状態を保つ
 - ライブラリコード（`src/cli.ts` 以外）に `console.log` を残さない

@@ -68,3 +68,10 @@ BACKLOG.md             # Step2〜4 でループが読む外部状態
 - `cd app && npm install && npm test` で Step0 想定の失敗テストが意図通り落ちること
 - `npm run lint` で仕込んだ lint 違反が検出されること
 - 各ステップの手順書のプロンプトを Claude Code で実際に実行し、痛み→解消の体験が成立すること
+
+## 追記（初版実装後の変更）
+
+- 概念解説 `docs/what-is-loop-engineering.md` と実践パターン集 `docs/practices.md` を追加
+  （参考文献は著者の実績・評判で選定し、Zenn / Qiita は除外する方針）
+- エージェント向けの基本情報として `CLAUDE.md` を追加（罠保護のため SPEC / BACKLOG には触れない）
+- Step 4 の所要時間は終章の考察を含めて45分表記に統一
