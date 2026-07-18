@@ -2,7 +2,13 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { addExpense, loadExpenses, saveExpenses } from '../src/store';
+import {
+  addExpense,
+  findExpense,
+  loadExpenses,
+  markDeleted,
+  saveExpenses
+} from '../src/store';
 import type { Expense } from '../src/types';
 
 describe('loadExpenses / saveExpenses', () => {
@@ -60,5 +66,53 @@ describe('addExpense', () => {
     ];
     addExpense(existing, { date: '2026-07-02', category: '交通費', amount: 460 });
     expect(existing).toHaveLength(1);
+  });
+});
+
+describe('findExpense', () => {
+  const existing: Expense[] = [
+    { id: 1, date: '2026-07-01', category: '食費', amount: 1200 },
+    { id: 2, date: '2026-07-02', category: '交通費', amount: 460, deleted: true }
+  ];
+
+  it('該当IDの支出を返す', () => {
+    expect(findExpense(existing, 1)?.category).toBe('食費');
+  });
+
+  it('削除済みの支出も返す（削除済み判定は呼び出し側に委ねる）', () => {
+    expect(findExpense(existing, 2)?.deleted).toBe(true);
+  });
+
+  it('該当IDがなければ undefined を返す', () => {
+    expect(findExpense(existing, 99)).toBeUndefined();
+  });
+});
+
+describe('markDeleted', () => {
+  const existing: Expense[] = [
+    { id: 1, date: '2026-07-01', category: '食費', amount: 1200 },
+    { id: 2, date: '2026-07-02', category: '交通費', amount: 460 },
+    { id: 3, date: '2026-07-03', category: '娯楽', amount: 800 }
+  ];
+
+  it('指定IDに deleted:true を付与した配列を返す', () => {
+    const result = markDeleted(existing, 2);
+    expect(result.find((e) => e.id === 2)?.deleted).toBe(true);
+  });
+
+  it('指定ID以外はそのまま（deleted を付与しない）', () => {
+    const result = markDeleted(existing, 2);
+    expect(result.find((e) => e.id === 1)?.deleted).toBeUndefined();
+    expect(result.find((e) => e.id === 3)?.deleted).toBeUndefined();
+  });
+
+  it('レコードは取り除かず件数を保つ（論理削除）', () => {
+    const result = markDeleted(existing, 2);
+    expect(result).toHaveLength(3);
+  });
+
+  it('元の配列・要素は変更しない（非破壊）', () => {
+    markDeleted(existing, 1);
+    expect(existing[0]?.deleted).toBeUndefined();
   });
 });

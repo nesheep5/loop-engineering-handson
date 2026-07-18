@@ -1,6 +1,11 @@
 // 支出の集計と予算チェック
 import type { Expense } from './types';
 
+/** 論理削除されていない（deleted が true でない）支出だけを抽出する */
+export function filterActive(expenses: Expense[]): Expense[] {
+  return expenses.filter((e) => e.deleted !== true);
+}
+
 /** 指定した月（YYYY-MM 形式）の支出だけを抽出する */
 export function filterByMonth(expenses: Expense[], month: string): Expense[] {
   // 月末日は月によって 28〜31 日と異なるため、翌月1日未満で判定する

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  filterActive,
   filterByMonth,
   isOverBudget,
   monthlyTotal,
@@ -15,6 +16,29 @@ const expenses: Expense[] = [
   { id: 4, date: '2026-07-31', category: '食費', amount: 3000, memo: '外食' },
   { id: 5, date: '2026-08-01', category: '娯楽', amount: 1500 }
 ];
+
+describe('filterActive', () => {
+  const withDeleted: Expense[] = [
+    { id: 1, date: '2026-07-01', category: '食費', amount: 1200 },
+    { id: 2, date: '2026-07-02', category: '交通費', amount: 460, deleted: true },
+    { id: 3, date: '2026-07-03', category: '娯楽', amount: 800, deleted: false }
+  ];
+
+  it('deleted:true のレコードを除外する', () => {
+    expect(filterActive(withDeleted).map((e) => e.id)).toEqual([1, 3]);
+  });
+
+  it('deleted 未指定・false のレコードは残す', () => {
+    const result = filterActive(withDeleted);
+    expect(result.some((e) => e.id === 1)).toBe(true);
+    expect(result.some((e) => e.id === 3)).toBe(true);
+  });
+
+  it('元の配列は変更しない', () => {
+    filterActive(withDeleted);
+    expect(withDeleted).toHaveLength(3);
+  });
+});
 
 describe('filterByMonth', () => {
   it('指定した月の支出だけを抽出する', () => {

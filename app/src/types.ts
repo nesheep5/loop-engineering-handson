@@ -12,6 +12,8 @@ export type Expense = {
   amount: number;
   /** 任意のメモ */
   memo?: string;
+  /** 論理削除フラグ（省略時は false とみなす） */
+  deleted?: boolean;
 };
 
 /** カテゴリごとの月間予算 */
