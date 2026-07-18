@@ -13,14 +13,33 @@ export function formatExpenseRow(e: Expense): string {
 }
 
 /**
- * 支出一覧をCSV文字列に変換する。
+ * CSVの1フィールドを RFC 4180 準拠でエスケープする。
+ * カンマ・改行・ダブルクォートを含む場合はダブルクォートで囲み、
+ * 内部のダブルクォートは "" に二重化する。
+ */
+function escapeCsvField(value: string): string {
+  if (/[",\r\n]/.test(value)) {
+    return `"${value.replace(/"/g, '""')}"`;
+  }
+  return value;
+}
+
+/**
+ * 支出一覧をCSV文字列に変換する（RFC 4180 準拠）。
  * ヘッダ行: id,date,category,amount,memo
  */
-// TODO: メモにカンマが含まれると列がずれる。エスケープ処理が必要
 export function toCsv(expenses: Expense[]): string {
   const header = 'id,date,category,amount,memo';
-  const rows = expenses.map(
-    (e) => `${e.id},${e.date},${e.category},${e.amount},${e.memo ?? ''}`
+  const rows = expenses.map((e) =>
+    [
+      String(e.id),
+      e.date,
+      e.category,
+      String(e.amount),
+      e.memo ?? ''
+    ]
+      .map(escapeCsvField)
+      .join(',')
   );
   return [header, ...rows].join('\n');
 }
