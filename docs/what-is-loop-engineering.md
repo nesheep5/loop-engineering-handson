@@ -56,6 +56,12 @@ AI とのつきあい方は、レバレッジポイント（人間の工夫が�
 ここで人間が設計するのは行動の中身ではなく、**終了条件と検証手段**です。
 「いい感じにして」はループになりません。「`npm test` が全部通る」はループになります。
 
+実践者の間では、ループエンジニアリングは高尚な概念というより
+**停止条件・検証・状態管理という地味な部品の積み重ね**だと言われます。
+ゴールを満たせないまま回り続けるループを打ち切る上限（回数・予算・時間）、
+検証手段そのものが改ざんされていないことの保証（権限分離）、
+実行間で壊れない状態ファイル——この3つの作り込みが実用性を決めます。
+
 ### ループを支える6つの部品
 
 エッセイは、この最小ループを実運用に耐える形にする部品を挙げています。
@@ -122,4 +128,5 @@ AI とのつきあい方は、レバレッジポイント（人間の工夫が�
 
 - [Loop Engineering — Addy Osmani](https://addyosmani.com/blog/loop-engineering/)（原典）
 - [Loop Engineering — O'Reilly Radar](https://www.oreilly.com/radar/loop-engineering/)（転載版）
+- [Loop Engineering実践 — DevelopersIO](https://dev.classmethod.jp/articles/claude-loop-engineering-practice/)（bash の最小ループから Agent SDK・CI 常駐までの実装パターンとコスト実測）
 - 本ハンズオンの設計書: `superpowers/specs/2026-07-18-loop-engineering-handson-design.md`

@@ -52,9 +52,28 @@ BACKLOG.md はその第一歩の「手元で完結する代用品」だったと
 **試すヒント**: BACKLOG.md の代わりに GitHub Issues を状態にして、
 「ラベル `agent-ok` の付いた Issue を1つ選んで着手する」ループに置き換えてみる。
 
+## 5. 実行基盤のバリエーション — /loop の外へ
+
+**残る痛み**: `/loop` はセッションの中で生きている。ターミナルを閉じればループも死ぬ。
+
+ループの本質は「起動→1周分の作業→記録」の繰り返しであって、`/loop` はその実行基盤の
+ひとつにすぎません。基盤は要件に応じて選べます。
+
+| 基盤 | 特徴 | 向いている用途 |
+|------|------|--------------|
+| シェルスクリプト＋ `claude -p` | 最も原始的。while ループで headless 実行を回すだけなので、仕組みが完全に見える | ループの原理を理解する。CI に組み込む前の試作 |
+| `/loop`（セッション内） | 手軽。ただしセッション終了で停止 | 本ハンズオンのような対話圏内の反復作業 |
+| スケジュール実行（routines / cron） | クラウド側で定期起動。PC を閉じても回る | 毎朝のトリアージなど「あなたが寝ている間」のループ |
+| CI 常駐（GitHub Actions 等） | イベント駆動＋cron。チームの既存パイプラインに同居できる | Issue 起票や CI 失敗をトリガーにするチームのループ |
+| Agent SDK | コードでループを書く。フックで危険操作の拒否リストやトークン予算ガードを実装できる | 停止条件・権限制御を厳密に作り込む本番運用 |
+
+どの基盤でも、本編で作った部品（検証可能なゴール・外部状態・検証の分離・停止条件）は
+そのまま持ち運べます。**基盤が変わっても、設計するものは変わりません。**
+
 ---
 
 ## 参考資料
 
 - [Loop Engineering — Addy Osmani](https://addyosmani.com/blog/loop-engineering/)（原典エッセイ）
+- [Loop Engineering実践 — DevelopersIO](https://dev.classmethod.jp/articles/claude-loop-engineering-practice/)（bash から Agent SDK・CI 常駐までの実装パターン、Verifier Theater 対策、コスト実測。本教材の停止条件・権限分離・段階的ロールアウトの記述はこの記事の知見を参考にした）
 - 本ハンズオンの設計書: `docs/superpowers/specs/2026-07-18-loop-engineering-handson-design.md`
