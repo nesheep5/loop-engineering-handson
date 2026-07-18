@@ -102,6 +102,51 @@ Anthropic 公式のループ入門は、ループ運用の習熟を「失敗の�
 
 出典: [Loop engineering: Getting started with loops — Anthropic](https://claude.com/blog/getting-started-with-loops)
 
+## 6. レビューをループの外に残さない — PRレビューボトルネックの克服
+
+生成側をループ化すると、律速段階は書く速度からレビューする速度に移ります。
+Armin Ronacher は「歴史的にはコードを書く方が読むより遅かったが、AI 支援で逆転した」
+と指摘し、自身が関わる OpenClaw では未処理 PR が2,500件を超えた実例を挙げています。
+Anthropic 社内でも、エンジニアのコード生産量が約200%増えた結果、チームの
+ボトルネックはレビューに移りました。著名実践者の対策は、次の4つの原則に収斂しています。
+
+**原則A: 機械が書くなら、機械が先にレビューする。** Ronacher の結論は明快です——
+「If the machine writes the code, the machine better review the code at the same time.
+（機械がコードを書くなら、機械が同時にレビューした方がいい）」。レビューを
+マージ前の人間の作業として残すのではなく、**ループの一工程として組み込み**、
+人間に届く時点で「最も有能な機械による最も厳しいレビュー」は通過済みにします。
+
+- Peter Steinberger は PR を出す**前**に自動レビュー（autoreview）を数時間単位で走らせる
+  運用を「スタックに加えた中で最も効果が大きいスキル」と評しています
+- Anthropic の Code Review 機能は「並列にバグを探索 → 検証で偽陽性を除去 →
+  重大度でランク付け」というマルチエージェント構成で、社内では実質的な
+  レビューコメントが付く PR の割合が 16% から 54% に上がりました
+- 本ハンズオン Step 3 の reviewer subagent は、この原則の最小形です
+
+**原則B: 出す側が証拠を同梱する。** Simon Willison は「未テストの AI 生成コードの
+提出はソフトウェアエンジニアとしての職務怠慢」と断じます。Addy Osmani はこれを
+「PR 契約」として定式化しました——①変更の意図（なぜやるか）②動作証明（テスト結果・
+スクリーンショット・ログ）③リスク評価（AI が書いた箇所と危険度）④人間の判断が
+必要な箇所の明記。セクション2の証拠主義を、PR という単位に適用したものです。
+レビュアーの仕事が「正しさをゼロから確かめる」から「証拠を検分する」に変わります。
+
+**原則C: 小さく、層で出す。** エージェントの PR は人間のものより平均51%大きくなる
+という測定があり、大きな diff はレビュー不能の主因です。対策は生成時点でのサイズ
+制約と、依存関係のある小さな PR のチェーンとして出す **stacked PRs** です。
+各層のレビュー対象はその層の diff だけになり、下から順にマージすることで
+「検証済みの挙動の上にだけ積む」構造になります。
+
+**原則D: AI レビューはセンサー、人間は判定。** Osmani は AI レビューを「判定
+（judge）ではなくセンサー」と位置づけます。異なるアーキテクチャの4つのレビュー
+ツールを並列実行した検証では、検出されたバグの93.4%は1つのツールしか見つけて
+おらず、異質なレビュアーの並列が効きます。ただしセンサーがいくら増えても、
+リスクに応じてレビューの深さを変える判断（設定変更は軽く、決済パスは多層に）と
+マージの最終権限は人間に残します。Ronacher が言うとおり「非知覚的な機械は責任を
+負えない」——これは[人間に残る3つの責任](what-is-loop-engineering.md#人間に残る3つの責任)の
+検証責任そのものです。
+
+出典: [The Final Bottleneck — Armin Ronacher](https://lucumr.pocoo.org/2026/2/13/the-final-bottleneck/)、[Agentic Code Review — Addy Osmani](https://addyosmani.com/blog/agentic-code-review/)、[Code Review in the Age of AI — Addy Osmani](https://addyo.substack.com/p/code-review-in-the-age-of-ai)、[Code Review for Claude Code — Anthropic](https://claude.com/blog/code-review)、[Simon Willison の投稿](https://fedi.simonwillison.net/@simon/115741153519437110)、[Peter Steinberger の投稿](https://x.com/steipete/status/2059453909819654554)
+
 ---
 
 ## さらに読む — 文献ガイド
@@ -115,4 +160,7 @@ Anthropic 公式のループ入門は、ループ運用の習熟を「失敗の�
 | [Ralph Wiggum — Geoffrey Huntley](https://ghuntley.com/ralph/) | 技法の考案者。コミュニティで広く追試され Claude Code 公式プラグイン化（2025年7月） | fresh context・1周1タスク・背圧 |
 | [Getting started with loops — Anthropic 公式](https://claude.com/blog/getting-started-with-loops) | Claude Code 開発チームによる公式の体系化 | 4つのループ分類、トークン管理 |
 | [Best practices — Claude Code Docs](https://code.claude.com/docs/en/best-practices) | 公式ドキュメント | 検証の4段階、コンテキスト管理、fan-out |
+| [The Final Bottleneck — Armin Ronacher](https://lucumr.pocoo.org/2026/2/13/the-final-bottleneck/) | Flask 作者・Sentry 共同創業者（2026年2月） | レビューが最終ボトルネックになる構造、機械レビューの必然、責任の所在 |
+| [Agentic Code Review — Addy Osmani](https://addyosmani.com/blog/agentic-code-review/) | 原典エッセイの著者によるレビュー各論 | リスク階層別レビュー、異種 AI レビュアーの並列、PR 契約 |
+| [Code Review for Claude Code — Anthropic 公式](https://claude.com/blog/code-review) | Claude Code 開発チーム | マルチエージェントレビューの仕組みと社内実測値（16%→54%） |
 | [Loop Engineering実践 — DevelopersIO](https://dev.classmethod.jp/articles/claude-loop-engineering-practice/) | クラスメソッドの技術ブログ。日本語の実装レポート | 6段階の実装パターン、Verifier Theater、コスト実測 |
