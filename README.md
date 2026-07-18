@@ -7,6 +7,8 @@
 Addy Osmani のエッセイ [Loop Engineering](https://addyosmani.com/blog/loop-engineering/)（2026年6月）で
 名前がついたこの考え方を、**2〜3時間**の手を動かす体験として学ぶハンズオンです。
 
+概念の背景を先に知りたい方は [ループエンジニアリングとは何か](docs/what-is-loop-engineering.md) をどうぞ（約10分）。
+
 ## 対象者と前提
 
 - 開発経験があり、**Claude Code を日常的に使っている**エンジニア
@@ -43,6 +45,7 @@ npm test        # 6件失敗します。ここがスタート地点です
 
 ```
 docs/steps/       ステップ別の手順書（step0.md から順に進む）
+docs/what-is-loop-engineering.md  概念解説（背景知識の読み物）
 docs/advanced.md  発展編
 docs/answers.md   答え合わせ（実施前に読まないこと）
 app/              教材アプリ
