@@ -1,0 +1,123 @@
+// kakeibo CLI エントリポイント
+import { fileURLToPath } from 'node:url';
+import { formatExpenseRow, formatYen, toCsv } from './format';
+import { addExpense, loadExpenses, saveExpenses } from './store';
+import {
+  filterByMonth,
+  isOverBudget,
+  monthlyTotal,
+  remainingBudget,
+  totalByCategory
+} from './summary';
+import type { Budget } from './types';
+
+const DATA_PATH = fileURLToPath(new URL('../data/expenses.json', import.meta.url));
+const BUDGET_PATH = fileURLToPath(new URL('../data/budgets.json', import.meta.url));
+
+function usage(): void {
+  console.log(`kakeibo - ハンズオン教材の家計簿CLI
+
+使い方:
+  npm run kakeibo -- add <日付> <カテゴリ> <金額> [メモ]   支出を記録する
+  npm run kakeibo -- list [YYYY-MM]                        支出を一覧表示する
+  npm run kakeibo -- summary <YYYY-MM>                     月の集計を表示する
+  npm run kakeibo -- budget <YYYY-MM>                      予算の消化状況を表示する
+  npm run kakeibo -- export [YYYY-MM]                      CSV形式で出力する
+
+例:
+  npm run kakeibo -- add 2026-07-01 食費 1200 スーパーで買い物
+  npm run kakeibo -- summary 2026-07`);
+}
+
+async function loadBudgets(): Promise<Budget[]> {
+  const { readFileSync, existsSync } = await import('node:fs');
+  if (!existsSync(BUDGET_PATH)) return [];
+  return JSON.parse(readFileSync(BUDGET_PATH, 'utf-8')) as Budget[];
+}
+
+async function main(): Promise<void> {
+  const [command, ...args] = process.argv.slice(2);
+  const expenses = loadExpenses(DATA_PATH);
+
+  switch (command) {
+    case 'add': {
+      const [date, category, amountStr, ...memoParts] = args;
+      if (!date || !category || !amountStr) {
+        console.error('エラー: add には 日付・カテゴリ・金額 が必要です');
+        process.exitCode = 1;
+        return;
+      }
+      const amount = Number(amountStr);
+      if (!Number.isInteger(amount) || amount <= 0) {
+        console.error('エラー: 金額は正の整数で指定してください');
+        process.exitCode = 1;
+        return;
+      }
+      const memo = memoParts.length > 0 ? memoParts.join(' ') : undefined;
+      const updated = addExpense(expenses, { date, category, amount, memo });
+      saveExpenses(DATA_PATH, updated);
+      const added = updated[updated.length - 1];
+      console.log(`記録しました: ${formatExpenseRow(added!)}`);
+      return;
+    }
+    case 'list': {
+      const [month] = args;
+      const target = month ? filterByMonth(expenses, month) : expenses;
+      if (target.length === 0) {
+        console.log('支出の記録がありません');
+        return;
+      }
+      for (const e of target) {
+        console.log(formatExpenseRow(e));
+      }
+      return;
+    }
+    case 'summary': {
+      const [month] = args;
+      if (!month) {
+        console.error('エラー: summary には対象月（YYYY-MM）が必要です');
+        process.exitCode = 1;
+        return;
+      }
+      const monthly = filterByMonth(expenses, month);
+      const totals = totalByCategory(monthly);
+      console.log(`${month} の支出`);
+      for (const [category, total] of Object.entries(totals)) {
+        console.log(`  ${category.padEnd(6, '　')} ${formatYen(total).padStart(10)}`);
+      }
+      console.log(`  合計     ${formatYen(monthlyTotal(expenses, month)).padStart(10)}`);
+      return;
+    }
+    case 'budget': {
+      const [month] = args;
+      if (!month) {
+        console.error('エラー: budget には対象月（YYYY-MM）が必要です');
+        process.exitCode = 1;
+        return;
+      }
+      const budgets = await loadBudgets();
+      const totals = totalByCategory(filterByMonth(expenses, month));
+      console.log(`${month} の予算消化状況`);
+      for (const b of budgets) {
+        const spent = totals[b.category] ?? 0;
+        const status = isOverBudget(spent, b.monthlyLimit)
+          ? `超過！ ${formatYen(spent - b.monthlyLimit)} オーバー`
+          : `残り ${formatYen(remainingBudget(b.monthlyLimit, spent))}`;
+        console.log(
+          `  ${b.category.padEnd(6, '　')} ${formatYen(spent).padStart(10)} / ${formatYen(b.monthlyLimit).padStart(10)}  ${status}`
+        );
+      }
+      return;
+    }
+    case 'export': {
+      const [month] = args;
+      const target = month ? filterByMonth(expenses, month) : expenses;
+      console.log(toCsv(target));
+      return;
+    }
+    default:
+      usage();
+  }
+}
+
+await main();

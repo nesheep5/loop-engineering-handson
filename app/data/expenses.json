@@ -1,0 +1,10 @@
+[
+  { "id": 1, "date": "2026-07-01", "category": "食費", "amount": 1200, "memo": "スーパーで買い物" },
+  { "id": 2, "date": "2026-07-02", "category": "交通費", "amount": 460 },
+  { "id": 3, "date": "2026-07-05", "category": "娯楽", "amount": 1800, "memo": "映画" },
+  { "id": 4, "date": "2026-07-08", "category": "食費", "amount": 650, "memo": "コンビニ" },
+  { "id": 5, "date": "2026-07-12", "category": "食費", "amount": 3200, "memo": "外食、家族と" },
+  { "id": 6, "date": "2026-07-15", "category": "日用品", "amount": 980 },
+  { "id": 7, "date": "2026-07-20", "category": "交通費", "amount": 1240, "memo": "電車、往復" },
+  { "id": 8, "date": "2026-06-28", "category": "食費", "amount": 2100, "memo": "先月分" }
+]

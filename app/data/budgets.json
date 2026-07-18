@@ -1,0 +1,6 @@
+[
+  { "category": "食費", "monthlyLimit": 30000 },
+  { "category": "交通費", "monthlyLimit": 5000 },
+  { "category": "娯楽", "monthlyLimit": 10000 },
+  { "category": "日用品", "monthlyLimit": 8000 }
+]
