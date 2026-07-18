@@ -14,6 +14,7 @@ import {
   isOverBudget,
   monthlyTotal,
   remainingBudget,
+  topCategories,
   totalByCategory
 } from './summary';
 import type { Budget } from './types';
@@ -29,6 +30,7 @@ function usage(): void {
   npm run kakeibo -- delete <ID>                           支出を削除する
   npm run kakeibo -- list [YYYY-MM]                        支出を一覧表示する
   npm run kakeibo -- summary <YYYY-MM>                     月の集計を表示する
+  npm run kakeibo -- top <YYYY-MM>                         月の支出上位3カテゴリを表示する
   npm run kakeibo -- budget <YYYY-MM>                      予算の消化状況を表示する
   npm run kakeibo -- export [YYYY-MM]                      CSV形式で出力する
 
@@ -96,6 +98,26 @@ async function main(): Promise<void> {
         console.log(`  ${category.padEnd(6, '　')} ${formatYen(total).padStart(10)}`);
       }
       console.log(`  合計     ${formatYen(monthlyTotal(active, month)).padStart(10)}`);
+      return;
+    }
+    case 'top': {
+      const [month] = args;
+      if (!month) {
+        console.error('エラー: top には対象月（YYYY-MM）が必要です');
+        process.exitCode = 1;
+        return;
+      }
+      const ranking = topCategories(filterByMonth(active, month), 3);
+      if (ranking.length === 0) {
+        console.log(`${month} の支出はありません`);
+        return;
+      }
+      console.log(`${month} の支出上位カテゴリ`);
+      ranking.forEach((r, i) => {
+        console.log(
+          `  ${i + 1}. ${r.category.padEnd(6, '　')} ${formatYen(r.total).padStart(10)}`
+        );
+      });
       return;
     }
     case 'budget': {

@@ -36,6 +36,21 @@ export function monthlyTotal(expenses: Expense[], month: string): number {
 }
 
 /**
+ * カテゴリ別合計を金額の大きい順に並べ、上位 limit 件を返す。
+ * 同額の場合はカテゴリ名の昇順で安定させる。
+ */
+export function topCategories(
+  expenses: Expense[],
+  limit: number
+): { category: string; total: number }[] {
+  const totals = totalByCategory(expenses);
+  return Object.entries(totals)
+    .map(([category, total]) => ({ category, total }))
+    .sort((a, b) => b.total - a.total || a.category.localeCompare(b.category))
+    .slice(0, limit);
+}
+
+/**
  * 予算を超過しているか判定する。
  * ちょうど予算額ぴったりの場合は超過とみなさない。
  */

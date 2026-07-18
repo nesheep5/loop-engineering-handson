@@ -5,6 +5,7 @@ import {
   isOverBudget,
   monthlyTotal,
   remainingBudget,
+  topCategories,
   totalByCategory
 } from '../src/summary';
 import type { Expense } from '../src/types';
@@ -75,6 +76,59 @@ describe('monthlyTotal', () => {
 
   it('支出がない月は合計0を返す', () => {
     expect(monthlyTotal(expenses, '2026-01')).toBe(0);
+  });
+});
+
+describe('topCategories', () => {
+  const ranked: Expense[] = [
+    { id: 1, date: '2026-07-01', category: '食費', amount: 3000 },
+    { id: 2, date: '2026-07-02', category: '交通費', amount: 1000 },
+    { id: 3, date: '2026-07-03', category: '娯楽', amount: 2000 },
+    { id: 4, date: '2026-07-04', category: '日用品', amount: 500 }
+  ];
+
+  it('金額の大きい順に上位 limit 件を返す', () => {
+    expect(topCategories(ranked, 3)).toEqual([
+      { category: '食費', total: 3000 },
+      { category: '娯楽', total: 2000 },
+      { category: '交通費', total: 1000 }
+    ]);
+  });
+
+  it('同一カテゴリの支出は合算してから順位付けする', () => {
+    const withDup: Expense[] = [
+      { id: 1, date: '2026-07-01', category: '食費', amount: 1200 },
+      { id: 2, date: '2026-07-02', category: '食費', amount: 3000 },
+      { id: 3, date: '2026-07-03', category: '交通費', amount: 460 }
+    ];
+    expect(topCategories(withDup, 3)).toEqual([
+      { category: '食費', total: 4200 },
+      { category: '交通費', total: 460 }
+    ]);
+  });
+
+  it('カテゴリ数が limit 未満なら全件を返す', () => {
+    const few: Expense[] = [
+      { id: 1, date: '2026-07-01', category: '食費', amount: 1000 },
+      { id: 2, date: '2026-07-02', category: '交通費', amount: 500 }
+    ];
+    expect(topCategories(few, 3)).toHaveLength(2);
+  });
+
+  it('同額の場合はカテゴリ名の照合順で安定させる（順序が決定的）', () => {
+    const tie: Expense[] = [
+      { id: 1, date: '2026-07-01', category: '娯楽', amount: 1000 },
+      { id: 2, date: '2026-07-02', category: '交通費', amount: 1000 }
+    ];
+    // 入力順に依存せず常に同じ順序（localeCompare 昇順）で返ることを確認する
+    const expected = ['娯楽', '交通費'];
+    expect(topCategories(tie, 3).map((r) => r.category)).toEqual(expected);
+    const reversed: Expense[] = [tie[1]!, tie[0]!];
+    expect(topCategories(reversed, 3).map((r) => r.category)).toEqual(expected);
+  });
+
+  it('空配列なら空配列を返す', () => {
+    expect(topCategories([], 3)).toEqual([]);
   });
 });
 
