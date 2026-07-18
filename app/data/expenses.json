@@ -6,5 +6,6 @@
   { "id": 5, "date": "2026-07-12", "category": "食費", "amount": 3200, "memo": "外食、家族と" },
   { "id": 6, "date": "2026-07-15", "category": "日用品", "amount": 980 },
   { "id": 7, "date": "2026-07-20", "category": "交通費", "amount": 1240, "memo": "電車、往復" },
-  { "id": 8, "date": "2026-06-28", "category": "食費", "amount": 2100, "memo": "先月分" }
+  { "id": 8, "date": "2026-06-28", "category": "食費", "amount": 2100, "memo": "先月分" },
+  { "id": 9, "date": "2026-07-31", "category": "食費", "amount": 4500, "memo": "月末まとめ買い, 特売" }
 ]
