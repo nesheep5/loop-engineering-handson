@@ -34,7 +34,7 @@ jobs:
             echo "has-report=true" >> "$GITHUB_OUTPUT"
           else
             echo "has-report=false" >> "$GITHUB_OUTPUT"
-            echo "report コマンド未実装のためデプロイをスキップします"
+            echo "report コマンドが HTML を出力しないためデプロイをスキップします"
           fi
       - name: レポート生成
         if: steps.check.outputs.has-report == 'true'

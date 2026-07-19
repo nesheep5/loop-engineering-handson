@@ -39,8 +39,9 @@ Phase 2 でチケットは着々と done になり、PR も積み上がりまし
 
    - fork リポジトリの Settings → Pages → Source が「GitHub Actions」に
      なっているか（実践編セットアップの手順4）
-   - `report` コマンド自体の終了コード（ローカルで
-     `npm run kakeibo -- report 2026-07` を実行し、正常終了するか）
+   - `report` コマンドの出力（ローカルで
+     `npm run --silent kakeibo -- report 2026-07` を実行し、標準出力に
+     `<html` を含む HTML が出るか。CI のガードはこの内容で判定します）
    - Actions のログ（`check` ステップが `has-report=false` を出していないか、
      デプロイジョブがそもそもスキップされていないか）
 
