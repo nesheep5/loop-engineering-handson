@@ -97,6 +97,12 @@ BACKLOG.md はその第一歩の「手元で完結する代用品」だったと
 
 ---
 
+## 次へ: 実践編
+
+ここまでの部品を実務の開発フロー(PRD→チケット→PR→マージ→CI デプロイ)で
+組み立て直すハンズオンが[実践編](practical/overview.md)です。チケット作成ループと
+消化ループの2本を、あなた自身が部品から組み立てます。
+
 ## 参考資料
 
 - [Loop Engineering — Addy Osmani](https://addyosmani.com/blog/loop-engineering/)（原典エッセイ）
