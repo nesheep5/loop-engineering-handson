@@ -1,5 +1,5 @@
 # main への push で月次レポートを GitHub Pages に自動公開する
-# report コマンドが未実装の間は安全にスキップする
+# report が HTML を出力しない間は安全にスキップする
 name: レポートのデプロイ
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
         id: check
         working-directory: app
         run: |
-          if npm run --silent kakeibo -- report 2026-07 > /dev/null 2>&1; then
+          if npm run --silent kakeibo -- report 2026-07 2>/dev/null | grep -qi '<html'; then
             echo "has-report=true" >> "$GITHUB_OUTPUT"
           else
             echo "has-report=false" >> "$GITHUB_OUTPUT"

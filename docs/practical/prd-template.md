@@ -58,7 +58,7 @@ Phase 1 で PdM の帽子をかぶって記入する開発要件のテンプレ�
 - main へのマージ後、GitHub Pages のレポートが自動更新される
 
 ## CI との契約
-- report は HTML を「標準出力」に書き出す(deploy-report.yml が
-  `npm run --silent kakeibo -- report 2026-07 > public/index.html` で受ける)
+- report は HTML を「標準出力」に書き出す(deploy-report.yml が app ディレクトリから
+  `npm run --silent kakeibo -- report 2026-07 > ../public/index.html` で受ける)
 - 引数不正・データ欠損時は非ゼロ終了する(壊れた HTML を公開しない)
 ```

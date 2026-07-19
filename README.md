@@ -28,9 +28,9 @@ Addy Osmani のエッセイ [Loop Engineering](https://addyosmani.com/blog/loop-
 | [3](docs/steps/step3.md) | 作った本人の自己採点は甘い | **検証の分離**（reviewer サブエージェント） |
 | [4](docs/steps/step4.md) | 毎回自分で起動するのが辛い | **自動化**（/loop）＋人間の役割の考察 |
 
-さらに先へ: [実践編](docs/practical/overview.md)(PdM/Eng/QA の実務フローでチケット作成ループと消化ループを組み立てる)、
-[発展編](docs/advanced.md)(Worktrees / Skills / スケジュール実行 / MCP)、
-[実践パターン集](docs/practices.md)(デファクトの設計原則を出典付きで整理)
+さらに先へ: [実践編](docs/practical/overview.md)（PdM/Eng/QA の実務フローでチケット作成ループと消化ループを組み立てる）、
+[発展編](docs/advanced.md)（Worktrees / Skills / スケジュール実行 / MCP）、
+[実践パターン集](docs/practices.md)（デファクトの設計原則を出典付きで整理）
 
 ## はじめ方
 

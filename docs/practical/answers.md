@@ -53,12 +53,13 @@ tools: Read, Grep, Glob, Bash
 
 ## 検証手順
 
-1. 対象チケット(`tickets/KAKEI-xxx.md`)の受け入れ基準を読む
-2. PR ブランチの diff を読む(`git diff main...HEAD`)
-3. 受け入れ基準を1つずつ、実際にコマンドを実行して検証する
-4. `cd app && npm test && npm run lint && npm run typecheck` を実行する
-5. 受け入れ基準にない明らかな問題(既存機能の破壊など)がないか確認する
-6. 下の「追加の検証観点」をすべて検証に含める
+1. `gh pr checkout <PR番号>` で PR ブランチに切り替える(検証後は元のブランチに戻す)
+2. 対象チケット(`tickets/KAKEI-xxx.md`)の受け入れ基準を読む
+3. PR ブランチの diff を読む(`git diff main...HEAD`)
+4. 受け入れ基準を1つずつ、実際にコマンドを実行して検証する
+5. `cd app && npm test && npm run lint && npm run typecheck` を実行する
+6. 受け入れ基準にない明らかな問題(既存機能の破壊など)がないか確認する
+7. 下の「追加の検証観点」をすべて検証に含める
 
 ## 追加の検証観点
 
