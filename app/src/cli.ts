@@ -1,23 +1,13 @@
 // kakeibo CLI エントリポイント
 import { fileURLToPath } from 'node:url';
 import { formatExpenseRow, formatYen, toCsv } from './format';
+import { addExpense, loadExpenses, saveExpenses } from './store';
 import {
-  addExpense,
-  findExpense,
-  isValidDate,
-  loadExpenses,
-  markDeleted,
-  saveExpenses
-} from './store';
-import {
-  filterActive,
   filterByMonth,
   isOverBudget,
   monthlyTotal,
   remainingBudget,
-  topCategories,
-  totalByCategory,
-  unbudgetedCategories
+  totalByCategory
 } from './summary';
 import type { Budget } from './types';
 
@@ -29,10 +19,8 @@ function usage(): void {
 
 使い方:
   npm run kakeibo -- add <日付> <カテゴリ> <金額> [メモ]   支出を記録する
-  npm run kakeibo -- delete <ID>                           支出を削除する
   npm run kakeibo -- list [YYYY-MM]                        支出を一覧表示する
   npm run kakeibo -- summary <YYYY-MM>                     月の集計を表示する
-  npm run kakeibo -- top <YYYY-MM>                         月の支出上位3カテゴリを表示する
   npm run kakeibo -- budget <YYYY-MM>                      予算の消化状況を表示する
   npm run kakeibo -- export [YYYY-MM]                      CSV形式で出力する
 
@@ -50,19 +38,12 @@ async function loadBudgets(): Promise<Budget[]> {
 async function main(): Promise<void> {
   const [command, ...args] = process.argv.slice(2);
   const expenses = loadExpenses(DATA_PATH);
-  // list/summary/budget/export は論理削除済み（deleted:true）を除外して扱う
-  const active = filterActive(expenses);
 
   switch (command) {
     case 'add': {
       const [date, category, amountStr, ...memoParts] = args;
       if (!date || !category || !amountStr) {
         console.error('エラー: add には 日付・カテゴリ・金額 が必要です');
-        process.exitCode = 1;
-        return;
-      }
-      if (!isValidDate(date)) {
-        console.error('エラー: 日付は YYYY-MM-DD 形式で指定してください');
         process.exitCode = 1;
         return;
       }
@@ -81,7 +62,7 @@ async function main(): Promise<void> {
     }
     case 'list': {
       const [month] = args;
-      const target = month ? filterByMonth(active, month) : active;
+      const target = month ? filterByMonth(expenses, month) : expenses;
       if (target.length === 0) {
         console.log('支出の記録がありません');
         return;
@@ -98,33 +79,13 @@ async function main(): Promise<void> {
         process.exitCode = 1;
         return;
       }
-      const monthly = filterByMonth(active, month);
+      const monthly = filterByMonth(expenses, month);
       const totals = totalByCategory(monthly);
       console.log(`${month} の支出`);
       for (const [category, total] of Object.entries(totals)) {
         console.log(`  ${category.padEnd(6, '　')} ${formatYen(total).padStart(10)}`);
       }
-      console.log(`  合計     ${formatYen(monthlyTotal(active, month)).padStart(10)}`);
-      return;
-    }
-    case 'top': {
-      const [month] = args;
-      if (!month) {
-        console.error('エラー: top には対象月（YYYY-MM）が必要です');
-        process.exitCode = 1;
-        return;
-      }
-      const ranking = topCategories(filterByMonth(active, month), 3);
-      if (ranking.length === 0) {
-        console.log(`${month} の支出はありません`);
-        return;
-      }
-      console.log(`${month} の支出上位カテゴリ`);
-      ranking.forEach((r, i) => {
-        console.log(
-          `  ${i + 1}. ${r.category.padEnd(6, '　')} ${formatYen(r.total).padStart(10)}`
-        );
-      });
+      console.log(`  合計     ${formatYen(monthlyTotal(expenses, month)).padStart(10)}`);
       return;
     }
     case 'budget': {
@@ -135,8 +96,7 @@ async function main(): Promise<void> {
         return;
       }
       const budgets = await loadBudgets();
-      const monthly = filterByMonth(active, month);
-      const totals = totalByCategory(monthly);
+      const totals = totalByCategory(filterByMonth(expenses, month));
       console.log(`${month} の予算消化状況`);
       for (const b of budgets) {
         const spent = totals[b.category] ?? 0;
@@ -147,48 +107,15 @@ async function main(): Promise<void> {
           `  ${b.category.padEnd(6, '　')} ${formatYen(spent).padStart(10)} / ${formatYen(b.monthlyLimit).padStart(10)}  ${status}`
         );
       }
-      // 予算未設定なのに支出があるカテゴリを末尾に表示する
-      const unbudgeted = unbudgetedCategories(
-        monthly,
-        budgets.map((b) => b.category)
-      );
-      for (const u of unbudgeted) {
-        console.log(
-          `  ${u.category.padEnd(6, '　')} ${formatYen(u.total).padStart(10)}  予算未設定`
-        );
-      }
       return;
     }
     case 'export': {
       const [month] = args;
-      const target = month ? filterByMonth(active, month) : active;
+      const target = month ? filterByMonth(expenses, month) : expenses;
       console.log(toCsv(target));
       return;
     }
-    case 'delete': {
-      const [idStr] = args;
-      const id = Number(idStr);
-      if (!idStr || !Number.isInteger(id) || id <= 0) {
-        console.error('エラー: delete には削除する支出のID（正の整数）が必要です');
-        process.exitCode = 1;
-        return;
-      }
-      const target = findExpense(expenses, id);
-      if (!target) {
-        console.error(`エラー: ID ${id} の支出は見つかりませんでした`);
-        process.exitCode = 1;
-        return;
-      }
-      if (target.deleted === true) {
-        console.error(`エラー: ID ${id} の支出はすでに削除済みです`);
-        process.exitCode = 1;
-        return;
-      }
-      // 物理削除ではなく deleted:true を付与する論理削除
-      saveExpenses(DATA_PATH, markDeleted(expenses, id));
-      console.log(`削除しました: ID ${id}`);
-      return;
-    }
+    // TODO: delete コマンドを実装する
     default:
       usage();
   }

@@ -2,7 +2,7 @@
 import type { Expense } from './types';
 
 /** 金額を「¥1,234」形式（3桁区切り）に整形する */
-export function formatYen(amount: number): string {
+export function formatYen(amount: any): string {
   return '¥' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
@@ -13,33 +13,14 @@ export function formatExpenseRow(e: Expense): string {
 }
 
 /**
- * CSVの1フィールドを RFC 4180 準拠でエスケープする。
- * カンマ・改行・ダブルクォートを含む場合はダブルクォートで囲み、
- * 内部のダブルクォートは "" に二重化する。
- */
-function escapeCsvField(value: string): string {
-  if (/[",\r\n]/.test(value)) {
-    return `"${value.replace(/"/g, '""')}"`;
-  }
-  return value;
-}
-
-/**
- * 支出一覧をCSV文字列に変換する（RFC 4180 準拠）。
+ * 支出一覧をCSV文字列に変換する。
  * ヘッダ行: id,date,category,amount,memo
  */
+// TODO: メモにカンマが含まれると列がずれる。エスケープ処理が必要
 export function toCsv(expenses: Expense[]): string {
   const header = 'id,date,category,amount,memo';
-  const rows = expenses.map((e) =>
-    [
-      String(e.id),
-      e.date,
-      e.category,
-      String(e.amount),
-      e.memo ?? ''
-    ]
-      .map(escapeCsvField)
-      .join(',')
+  const rows = expenses.map(
+    (e) => `${e.id},${e.date},${e.category},${e.amount},${e.memo ?? ''}`
   );
   return [header, ...rows].join('\n');
 }

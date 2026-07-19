@@ -1,21 +1,11 @@
 // 支出の集計と予算チェック
 import type { Expense } from './types';
 
-/** 論理削除されていない（deleted が true でない）支出だけを抽出する */
-export function filterActive(expenses: Expense[]): Expense[] {
-  return expenses.filter((e) => e.deleted !== true);
-}
-
 /** 指定した月（YYYY-MM 形式）の支出だけを抽出する */
 export function filterByMonth(expenses: Expense[], month: string): Expense[] {
-  // 月末日は月によって 28〜31 日と異なるため、翌月1日未満で判定する
-  const [year = 0, mon = 0] = month.split('-').map(Number);
-  const nextMonth =
-    mon === 12
-      ? `${year + 1}-01`
-      : `${year}-${String(mon + 1).padStart(2, '0')}`;
+  console.log('filterByMonth:', month);
   return expenses.filter(
-    (e) => e.date >= `${month}-01` && e.date < `${nextMonth}-01`
+    (e) => e.date >= `${month}-01` && e.date <= `${month}-30`
   );
 }
 
@@ -32,39 +22,7 @@ export function totalByCategory(expenses: Expense[]): Record<string, number> {
 export function monthlyTotal(expenses: Expense[], month: string): number {
   return filterByMonth(expenses, month)
     .map((e) => e.amount)
-    .reduce((sum, amount) => sum + amount, 0);
-}
-
-/**
- * カテゴリ別合計を金額の大きい順に並べ、上位 limit 件を返す。
- * 同額の場合はカテゴリ名の昇順で安定させる。
- */
-export function topCategories(
-  expenses: Expense[],
-  limit: number
-): { category: string; total: number }[] {
-  const totals = totalByCategory(expenses);
-  return Object.entries(totals)
-    .map(([category, total]) => ({ category, total }))
-    .sort((a, b) => b.total - a.total || a.category.localeCompare(b.category))
-    .slice(0, limit);
-}
-
-/**
- * 支出のあるカテゴリのうち、予算が設定されていないものを
- * { category, total } の配列で返す（カテゴリ名の昇順）。
- * budgetedCategories には予算設定済みのカテゴリ名を渡す。
- */
-export function unbudgetedCategories(
-  expenses: Expense[],
-  budgetedCategories: string[]
-): { category: string; total: number }[] {
-  const budgeted = new Set(budgetedCategories);
-  const totals = totalByCategory(expenses);
-  return Object.entries(totals)
-    .filter(([category]) => !budgeted.has(category))
-    .map(([category, total]) => ({ category, total }))
-    .sort((a, b) => a.category.localeCompare(b.category));
+    .reduce((sum, amount) => sum + amount);
 }
 
 /**
@@ -72,7 +30,7 @@ export function unbudgetedCategories(
  * ちょうど予算額ぴったりの場合は超過とみなさない。
  */
 export function isOverBudget(spent: number, limit: number): boolean {
-  return spent > limit;
+  return spent >= limit;
 }
 
 /** 予算の残額を求める（超過時は0） */
