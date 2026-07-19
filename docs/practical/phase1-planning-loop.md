@@ -26,7 +26,7 @@ cp docs/practical/prd-template.md docs/practical/prd.md
 
 - [ ] 入力（PRD のパス）と出力（tickets/ への起票）が明記されている
 - [ ] 良いチケットの4条件（機械検証可能な受け入れ基準 / 1周で完了する大きさ / 独立性 / 小さい diff）が指示に入っている
-- [ ] `tickets/README.md` の frontmatter 仕様に従う指示がある
+- [ ] [`tickets/README.md`](../../tickets/README.md) の frontmatter 仕様に従う指示がある
 - [ ] `status: draft` で起票し、採否を人間に残す指示がある
 - [ ] スコープ外に踏み込まない指示がある
 
@@ -60,7 +60,8 @@ grep -l 'status: todo' tickets/KAKEI-*.md
 ```
 
 これが4枚以上を返せば完了です。`tickets/` をコミットして push してください
-（実践編では自分の fork に push します）。
+（実践編では自分の fork に push します）。ステータスの定義は
+[`tickets/README.md`](../../tickets/README.md) を参照してください。
 
 ## 7. チェックポイント
 
