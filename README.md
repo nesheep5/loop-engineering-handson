@@ -22,11 +22,11 @@ Addy Osmani のエッセイ [Loop Engineering](https://addyosmani.com/blog/loop-
 
 | Step | 体験する痛み | 導入する部品 |
 |------|------------|------------|
-| [0](docs/steps/step0.md) | 自分が「実行して結果を貼る係」になる | —（痛みの体験） |
-| [1](docs/steps/step1.md) | 毎回自分で検証するのが辛い | **検証ループ**（ゴール＋検証コマンド） |
-| [2](docs/steps/step2.md) | セッションが変わると全部忘れる | **外部状態**（BACKLOG.md） |
-| [3](docs/steps/step3.md) | 作った本人の自己採点は甘い | **検証の分離**（reviewer サブエージェント） |
-| [4](docs/steps/step4.md) | 毎回自分で起動するのが辛い | **自動化**（/loop）＋人間の役割の考察 |
+| [0](docs/basic/step0.md) | 自分が「実行して結果を貼る係」になる | —（痛みの体験） |
+| [1](docs/basic/step1.md) | 毎回自分で検証するのが辛い | **検証ループ**（ゴール＋検証コマンド） |
+| [2](docs/basic/step2.md) | セッションが変わると全部忘れる | **外部状態**（BACKLOG.md） |
+| [3](docs/basic/step3.md) | 作った本人の自己採点は甘い | **検証の分離**（reviewer サブエージェント） |
+| [4](docs/basic/step4.md) | 毎回自分で起動するのが辛い | **自動化**（/loop）＋人間の役割の考察 |
 
 さらに先へ: [実践編](docs/practical/overview.md)（PdM/Eng/QA の実務フローでチケット作成ループと消化ループを組み立てる）、
 [発展編](docs/advanced.md)（Worktrees / Skills / スケジュール実行 / MCP）、
@@ -53,11 +53,11 @@ npm test        # 6件失敗します。ここがスタート地点です
 ## リポジトリの歩き方
 
 ```
-docs/steps/       ステップ別の手順書（step0.md から順に進む）
+docs/basic/       ステップ別の手順書（step0.md から順に進む）
 docs/what-is-loop-engineering.md  概念解説（背景知識の読み物）
 docs/practices.md 実践パターン集（デファクトの設計原則と文献ガイド）
 docs/advanced.md  発展編
-docs/answers.md   答え合わせ（実施前に読まないこと）
+docs/basic/answers.md  答え合わせ（実施前に読まないこと）
 app/              教材アプリ
 SPEC.md           アプリの仕様書（Step 3 でレビューの判断基準になる）
 BACKLOG.md        タスクの外部状態（Step 2 からループが読み書きする）
@@ -65,4 +65,4 @@ CLAUDE.md         エージェントが毎セッション読む基本情報（�
 .claude/agents/   reviewer サブエージェント定義
 ```
 
-さあ、[Step 0](docs/steps/step0.md) から始めてください。
+さあ、[Step 0](docs/basic/step0.md) から始めてください。

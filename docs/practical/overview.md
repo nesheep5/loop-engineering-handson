@@ -91,7 +91,7 @@ flowchart TB
    「`npm test` / `npm run lint` / `npm run typecheck` がすべて通るまで修正して」
    と依頼し、検証ループを回してグリーンな main を作り、fork に push してください。
    これが実践編に入る前の卒業試験です。詰まったら本編の
-   [docs/answers.md](../answers.md)（答え合わせ）を参照してください。
+   [docs/basic/answers.md](../basic/answers.md)（答え合わせ）を参照してください。
 4. GitHub 上の fork リポジトリで **Settings → Pages → Source を「GitHub Actions」に変更**します。
 5. Actions タブでワークフローの実行が許可されていることを確認します。
 
