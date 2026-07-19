@@ -37,41 +37,34 @@
 全体の流れを図にすると次のようになります（GitHub 上でそのまま描画されます）。
 
 ```mermaid
-flowchart TB
-    subgraph inlet["人間の判断(入口)"]
-        PRD["PRD を書く"]
-        Adopt["チケットの採否・優先順位<br/>draft → todo"]
-    end
-    subgraph planning["チケット作成ループ(Phase 1)"]
-        Planner["planner が PRD を分解し<br/>tickets/ に draft で起票"]
-    end
-    subgraph delivery["消化ループ(Phase 2: 1チケット=1PR)"]
-        Pick["todo から1枚選ぶ"] --> Impl["実装+テスト"]
-        Impl --> Verify["test / lint / typecheck"]
-        Verify --> Self["セルフレビュー<br/>(観点リスト)"]
-        Self --> PR["push して PR 作成"]
-    end
-    subgraph outlet["人間の判断(出口)"]
-        QA["qa の検証報告を読む"]
-        Merge{"マージ判定"}
-        Feedback["気づきを部品に反映<br/>(改善: コミット)"]
-    end
-    subgraph ci["CI(Phase 3: 自動)"]
-        Actions["GitHub Actions"] --> Pages["Pages にレポート公開"]
+graph LR
+    classDef human fill:#ffe9a8,stroke:#b45309,color:#1f2328
+    classDef agent fill:#cce0ff,stroke:#1d4ed8,color:#1f2328
+    classDef auto  fill:#e2e3e5,stroke:#6b7280,color:#1f2328
+
+    A[PRD を書く]:::human --> B["planner が Story に分解<br/><b>[subagent]</b> planner.md"]:::agent
+    B --> C{採否・優先順位<br/>draft → todo}:::human
+    C --> D
+
+    subgraph loop2["チケット消化 &nbsp;<b>[skill]</b> /loop（loop.md）"]
+        D["todo を1枚選んで<br/>実装+テスト"]:::agent --> E["セルフレビューして<br/>push・PR 作成"]:::agent
+        E --> F["qa が受け入れ基準で検証<br/><b>[subagent]</b> qa.md"]:::agent
+        F --> G{マージ判定}:::human
+        G -- 差し戻し --> D
     end
 
-    PRD --> Planner --> Adopt --> Pick
-    PR --> QA --> Merge
-    Merge -->|"承認: merge"| Actions
-    Merge -->|"差し戻し"| Impl
-    Merge --> Feedback
-    Merge -->|"次の周回"| Pick
-    Feedback -.->|"セルフレビュー観点"| Self
-    Feedback -.->|"検証観点"| QA
-    Feedback -.->|"分解ルール"| Planner
+    G -- 承認: merge --> H["CI が Pages に<br/>レポートを自動公開"]:::auto
+    H -- 次のチケットへ --> D
+    G -.->|"気づきを部品に反映<br/>(planner / loop.md / qa)"| B
+
+    style loop2 fill:#f8f9fa,stroke:#adb5bd
 ```
 
 実線が仕事の流れ、点線があなたの気づきが還流するフィードバックループです。
+色は作り手を表します（黄=人間の判断、青=ループ、灰=CI）。
+`[skill]` は `/loop`（`.claude/loop.md`）、`[subagent]` は `.claude/agents/` のエージェント定義が
+動く箇所です。左の「PRD〜採否」が Phase 1、囲みの「チケット消化」が Phase 2、
+右端の CI が Phase 3 に対応します。
 
 ## 3. 前提
 
