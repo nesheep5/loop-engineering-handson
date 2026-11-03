@@ -57,6 +57,7 @@ docs/basic/       ステップ別の手順書（step0.md から順に進む）
 docs/what-is-loop-engineering.md  概念解説（背景知識の読み物）
 docs/practices.md 実践パターン集（デファクトの設計原則と文献ガイド）
 docs/advanced.md  発展編
+docs/design/      設計書（本編・実践編の学習設計と構成）
 docs/basic/answers.md  答え合わせ（実施前に読まないこと）
 app/              教材アプリ
 SPEC.md           アプリの仕様書（Step 3 でレビューの判断基準になる）

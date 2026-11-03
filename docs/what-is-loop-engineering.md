@@ -175,4 +175,4 @@ Claude Code の開発チームは、ループを**起動のされ方と止まり
 - [Loop Engineering — O'Reilly Radar](https://www.oreilly.com/radar/loop-engineering/)（転載版）
 - [Loop Engineering実践 — DevelopersIO](https://dev.classmethod.jp/articles/claude-loop-engineering-practice/)（bash の最小ループから Agent SDK・CI 常駐までの実装パターンとコスト実測）
 - その他の一次情報（Willison / Ralph / Anthropic 公式）は[実践パターン集の文献ガイド](practices.md#さらに読む--文献ガイド)を参照
-- 本ハンズオンの設計書: `superpowers/specs/2026-07-18-loop-engineering-handson-design.md`
+- 本ハンズオンの設計書: [本編](design/basic-handson.md) / [実践編](design/practical-handson.md)

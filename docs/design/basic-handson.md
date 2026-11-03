@@ -6,10 +6,10 @@
 
 Addy Osmani のエッセイ [Loop Engineering](https://addyosmani.com/blog/loop-engineering/)（2026年6月）は、コーディングエージェントとの関わり方を「プロンプトを打つ」から「エージェントにプロンプトを打つループを設計する」へ転換すべきだと説いた。Peter Steinberger の一文「You shouldn't be prompting coding agents anymore. You should be designing loops that prompt your agents.」で広く知られる。
 
-本ハンズオンは、このループエンジニアリングのエッセンスを **2〜3時間** の体験学習として提供する。
+本ハンズオンは、このループエンジニアリングのエッセンスを体験学習として提供する。
 
 - **対象者**: 開発経験があり、Claude Code を日常業務で利用しているエンジニア（Claude Code の基本操作説明は含めない）
-- **用途**: 個人学習用として作成し、将来的に社内・一般公開へ発展させる
+- **用途**: リポジトリを clone すれば一人で進められる自習教材として公開する
 - **ツール前提**: Claude Code
 - **公開ポリシー**: 個人情報・会社情報・ローカルパス等を一切含めない。サンプルデータはすべて架空
 
@@ -35,26 +35,26 @@ Addy Osmani のエッセイ [Loop Engineering](https://addyosmani.com/blog/loop-
   - **Step3 用**: 「一見動くが SPEC.md 違反」に陥りやすいタスク（実装エージェントの自己採点の甘さを体験させる仕掛け）
   - その他: lint 違反・TODO コメントを散らす
 
-## ステップ構成（計 約2.5〜3時間）
+## ステップ構成
 
-| Step | 痛み | 導入する要素 | 時間 |
-|------|------|------------|------|
-| 0 | セットアップ＋ワンショット指示のチャット往復 | （痛み体験のみ） | 20分 |
-| 1 | 毎回自分で結果確認するのが辛い | 検証ループ: ゴール＋検証コマンドを与え、テストが通るまで自己修正させる | 35分 |
-| 2 | セッションが変わると忘れる | 外部状態: BACKLOG.md から仕事を発見し、完了を記録させる | 35分 |
-| 3 | 本人に採点させると甘い | Subagent 検証分離: reviewer subagent が SPEC.md と照合する | 35分 |
-| 4 | 毎回自分で起動するのが辛い | 自動化: /loop で「タスク選択→実装→検証→レビュー→記録」を回し、人間はトリアージ役に | 35分 |
-| 終章 | — | 人間の役割の考察（検証責任・理解負債・cognitive surrender）＋発展編紹介 | 10分 |
+| Step | 痛み | 導入する要素 |
+|------|------|------------|
+| 0 | セットアップ＋ワンショット指示のチャット往復 | （痛み体験のみ） |
+| 1 | 毎回自分で結果確認するのが辛い | 検証ループ: ゴール＋検証コマンドを与え、テストが通るまで自己修正させる |
+| 2 | セッションが変わると忘れる | 外部状態: BACKLOG.md から仕事を発見し、完了を記録させる |
+| 3 | 本人に採点させると甘い | Subagent 検証分離: reviewer subagent が SPEC.md と照合する |
+| 4 | 毎回自分で起動するのが辛い | 自動化: /loop で「タスク選択→実装→検証→レビュー→記録」を回し、人間はトリアージ役に |
+| 終章 | — | 人間の役割の考察（検証責任・理解負債・cognitive surrender）＋発展編紹介 |
 
 発展編（docs/advanced.md、紹介のみ）: Worktrees（並行隔離）/ Skills（知識のコード化）/ cron・スケジュール実行 / MCP コネクタ
 
 ## リポジトリ構成
 
 ```
-README.md              # ハンズオンの入口・全体マップ・所要時間・前提条件
+README.md              # ハンズオンの入口・全体マップ・前提条件
 docs/
-  steps/step0.md〜step4.md   # 各ステップの手順書
-  answers.md                # 仕込んだ欠陥の一覧（講師・答え合わせ用）
+  basic/step0.md〜step4.md   # 各ステップの手順書
+  basic/answers.md          # 仕込んだ欠陥の一覧（講師・答え合わせ用）
   advanced.md               # 発展編
 app/                   # 教材アプリ（欠陥入り家計簿CLI）
   src/  tests/  package.json  tsconfig.json  eslint 設定
@@ -74,4 +74,5 @@ BACKLOG.md             # Step2〜4 でループが読む外部状態
 - 概念解説 `docs/what-is-loop-engineering.md` と実践パターン集 `docs/practices.md` を追加
   （参考文献は著者の実績・評判で選定し、Zenn / Qiita は除外する方針）
 - エージェント向けの基本情報として `CLAUDE.md` を追加（罠保護のため SPEC / BACKLOG には触れない）
-- Step 4 の所要時間は終章の考察を含めて45分表記に統一
+- README と手順書から所要時間の表記を削除
+- 手順書と答え合わせを `docs/basic/` に集約し、実践編（[設計書](practical-handson.md)）の `docs/practical/` と対になる構成に再編成

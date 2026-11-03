@@ -107,4 +107,4 @@ BACKLOG.md はその第一歩の「手元で完結する代用品」だったと
 
 - [Loop Engineering — Addy Osmani](https://addyosmani.com/blog/loop-engineering/)（原典エッセイ）
 - [Loop Engineering実践 — DevelopersIO](https://dev.classmethod.jp/articles/claude-loop-engineering-practice/)（bash から Agent SDK・CI 常駐までの実装パターン、Verifier Theater 対策、コスト実測。本教材の停止条件・権限分離・段階的ロールアウトの記述はこの記事の知見を参考にした）
-- 本ハンズオンの設計書: `docs/superpowers/specs/2026-07-18-loop-engineering-handson-design.md`
+- 本ハンズオンの設計書: [本編](design/basic-handson.md) / [実践編](design/practical-handson.md)
